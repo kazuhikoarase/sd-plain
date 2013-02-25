@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="Utf-8"?>
+<Types>
+
+  <Type sql-type="CHAR" java-type="java.lang.String" variable="yes"/>
+  <Type sql-type="CHARACTER" java-type="java.lang.String" variable="yes"/>
+  <Type sql-type="VARCHAR" java-type="java.lang.String" variable="yes"/>
+  <Type sql-type="INTEGER" java-type="java.lang.Integer"/>
+  <Type sql-type="DECIMAL" java-type="java.math.BigDecimal" variable="yes"/>
+
+</Types>

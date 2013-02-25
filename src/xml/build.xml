@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="Utf-8" ?>
+<project default="all" basedir=".">
+	
+	<property file="build.properties"/>
+	
+	<property name="project.dir" location="../../"/>
+	<property name="dest.dir.java" location="${project.dir}/src/java-generated"/>
+	<property name="dest.dir.ddl" location="${project.dir}/src/ddl-generated"/>
+
+	<property name="tmpl.dir" location="tmpl"/>
+
+	<target name="all" depends="Constants,DAO"/>
+
+	<target name="Constants">
+
+		<xslt
+			style="${tmpl.dir}/Constants_java.xsl"
+			includes="${package-path.prefix}/common/Constants.xml" 
+			destdir="${dest.dir.java}"
+			extension=".java">
+			<param name="package-prefix" expression="${package.prefix}" />
+		</xslt>
+
+	</target>
+	
+	<target name="setproxy" if="proxy.host">
+
+		<setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}"/>
+
+	</target>
+
+	<target name="DAO">
+
+		<ant antfile="${tmpl.dir}/DAO_build.xml" inheritall="false">
+			<property name="src.dir" location="."/>
+			<property name="dst.dir" location="${dest.dir.java}"/>
+			<property name="xslt.includes" value="${package-path.prefix}/db/table/**/*.tdml"/>
+			<property name="xslt.style" value="DAO_java.xsl"/>
+			<property name="xslt.extention" value=".java"/>
+			<property name="package.prefix" value="${package.prefix}" />
+		</ant>
+		<property name="xsl.ddl" location="${tmpl.dir}/DAO_ddl.xsl"/>
+		<xslt basedir="${package-path.prefix}/db/table"
+			style="${xsl.ddl}"
+			includes="**/*.tdml" 
+			destdir="${dest.dir.ddl}"
+			extension=".sql">
+			<param name="package-prefix" expression="${package.prefix}" />
+		</xslt>
+
+	</target>
+
+	<target name="clean">
+
+		<delete>
+			<fileset dir="${dest.dir.java}">
+				<include name="**/*.java"/>
+				<include name="**/*.xml"/>
+			</fileset>
+			<fileset dir="${dest.dir.ddl}">
+				<include name="**/*.sql"/>
+			</fileset>
+		</delete>
+
+	</target>
+	
+</project>

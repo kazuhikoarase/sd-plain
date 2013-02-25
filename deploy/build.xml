@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="Utf-8" ?>
+<project default="all" basedir=".">
+
+	<property file="build.properties"/>
+	<property name="project.home" value=".."/>
+	<property name="build" value="build"/>
+	<property name="build.java" value="${build}/java"/>
+	<property name="dist" value="dist"/>
+	<property name="src" value="${project.home}/src"/>
+	<property name="webapp.home" value="${project.home}/WebContent"/>
+
+	<property environment="env" />
+	<property name="WEB_APP_LIB" value="${env.WEB_APP_LIB}"/>
+	
+	<target name="all" depends="dist.webapp"/>
+
+	<target name="init">
+
+		<fail unless="env.WEB_APP_LIB" message="Environment variable WEB_APP_LIB is required.(ex. $TOMCAT_HOME/common/lib)"/>
+
+		<mkdir dir="${build}"/>
+		<mkdir dir="${dist}"/>
+
+		<tstamp>
+			<format property="timestamp" pattern="yyyyMMddHHmm"/>
+		</tstamp>
+
+	</target>
+	
+	<target name="clean" depends="init">
+		<delete dir="${build}"/>
+		<delete dir="${dist}"/>
+	</target>
+	
+	<target name="build.java" depends="init">
+
+		<mkdir dir="${build.java}"/>
+
+		<!-- javac -->
+		<javac
+			destdir="${build.java}"
+			encoding="${java.src.encoding}"
+			debug="true"
+			>
+			
+			<src path="${src}/java"/>
+			<src path="${src}/java-generated"/>
+			
+			<include name="**/*.java"/>
+			<exclude name="**/*Test*"/>
+
+			<classpath>
+         		<fileset dir="${webapp.home}/WEB-INF/lib">
+         			<include name="*.jar"/>
+         		</fileset>
+         		<fileset dir="${WEB_APP_LIB}">
+         			<include name="*.jar"/>
+         		</fileset>
+         	</classpath>
+
+		</javac>
+
+		<!-- resources -->
+		<copy todir="${build.java}" includeEmptyDirs="false">
+			<fileset dir="${src}/java">
+				<include name="**"/>
+				<exclude name="**/*.java"/>
+				<exclude name="**/*Test*"/>
+			</fileset>
+			<fileset dir="${src}/java-generated">
+				<include name="**"/>
+				<exclude name="**/*.java"/>
+				<exclude name="**/*Test*"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="dist.java" depends="build.java">
+
+		<jar jarfile="${dist}/${app.prefix}.jar">
+			<zipfileset dir="${build.java}">
+				<include name="**/*"/>
+			</zipfileset>
+		</jar>
+
+	</target>
+
+	<target name="dist.webapp" depends="build.java">
+		
+		<property name="webapp.warfile" 
+			value="${app.prefix}.v${timestamp}.war"/>
+
+		<war warfile="${dist}/${webapp.warfile}"
+				webxml="${webapp.home}/WEB-INF/web.xml">
+			<zipfileset dir="${webapp.home}" prefix="">
+				<include name="**/*"/>
+				<exclude name="WEB-INF/web.xml"/>
+			</zipfileset>
+			<zipfileset dir="${build.java}" prefix="WEB-INF/classes">
+				<include name="**/*"/>
+			</zipfileset>
+		</war>
+
+	</target>
+
+</project>

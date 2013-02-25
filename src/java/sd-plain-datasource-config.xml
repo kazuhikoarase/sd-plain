@@ -1,0 +1,34 @@
+<datasource-config>
+
+<!-- 
+	<datasource
+		name="データソース名" 
+		driverClassName="ドライバクラス名"
+		url="接続URL" 
+		username="ユーザ"
+		password="パスワード" 
+		preExecStatements="前処理ステートメント"
+	/>
+ -->
+
+	<datasource
+		name="jdbc/APP_DS" 
+		driverClassName="com.ibm.db2.jcc.DB2Driver"
+		url="jdbc:db2://localhost:50000/TESTDB" 
+		username="db2admin"
+		password="db2" 
+		preExecStatements="
+		"
+	/>
+
+	<datasource
+		name="jdbc/SECOND_DS" 
+		driverClassName="com.ibm.db2.jcc.DB2Driver"
+		url="jdbc:db2://localhost:50000/TESTDB" 
+		username="db2admin"
+		password="db2" 
+		preExecStatements="
+		"
+	/>
+
+</datasource-config>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="Utf-8"?>
+<schema targetNamespace="urn:Constants" xmlns:consts="urn:Constants"
+	xmlns="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+    <element name="Constants" type="consts:ConstantsType"></element>
+    
+    <complexType name="ConstantsType">
+        <sequence minOccurs="0" maxOccurs="unbounded">
+    		<element name="Const" type="consts:ConstType" maxOccurs="unbounded" minOccurs="0"></element>
+    		<element name="Const-Group" type="consts:Const-GroupType" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="Const-GroupType">
+    	<sequence>
+    		<element name="Const" type="consts:ConstType" minOccurs="0"
+    			maxOccurs="unbounded">
+    		</element>
+    	</sequence>
+    	<attribute name="name" type="string" use="required"></attribute>
+    	<attribute name="comment" type="string" use="required"></attribute>
+    	<attribute name="labelFunction" type="string" use="optional"></attribute>
+    </complexType>
+
+
+
+    <complexType name="ConstType">
+    	<attribute name="name" type="string" use="required"></attribute>
+        <attribute name="value" type="string" use="required"></attribute>
+        <attribute name="comment" type="string" use="required"></attribute>
+        <attribute name="deprecated" type="boolean" use="optional"></attribute>
+    </complexType>
+</schema>

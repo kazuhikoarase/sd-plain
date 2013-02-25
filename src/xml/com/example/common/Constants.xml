@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="Utf-8" ?>
+<consts:Constants
+	xmlns:consts="urn:Constants"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:consts:Constants consts:Constants.xsd"
+>
+
+	<consts:Const name="OFF" value="0" comment="OFF、NO、FALSE、いいえ、しない、不可、その他否定全般" />
+	<consts:Const name="ON" value="1" comment="ON、YES、TRUE、はい、する、可、その他肯定全般" />
+
+	<consts:Const-Group name="DATASOURCE_NAME" comment="データソース名">
+		<consts:Const name="APP" value="jdbc/APP_DS" comment="既定" />
+		<consts:Const name="SECOND" value="jdbc/SECOND_DS" comment="第二データソース" />
+	</consts:Const-Group>
+
+	<consts:Const-Group name="TEST_TYPE" comment="＊＊＊＊種別" labelFunction="true">
+		<consts:Const name="A" value="1" comment="あああ" />
+		<consts:Const name="B" value="2" comment="いいい" />
+		<consts:Const name="C" value="3" comment="ううう" />
+	</consts:Const-Group>
+
+</consts:Constants>

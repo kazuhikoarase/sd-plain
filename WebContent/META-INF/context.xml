@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="Utf-8"?>
+<Context>
+
+
+    <ResourceLink
+    	global="jdbc/DB2_TESTDB_DS"
+    	name="jdbc/APP_DS"
+    	type="javax.sql.DataSource"
+    />
+
+    <ResourceLink
+    	global="jdbc/DB2_TESTDB_DS"
+    	name="jdbc/SECOND_DS"
+    	type="javax.sql.DataSource"
+    />
+
+</Context>
