@@ -69,7 +69,7 @@ Integer max = Sql.currentConnection().selectFirstColumnOne(
 	format("Z") );
 ```
 
-```
+```java
 Sql.currentConnection().update(new SqlString("delete from TX0001 where 1<>1") );
 ```
 
