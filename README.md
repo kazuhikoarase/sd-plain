@@ -17,7 +17,7 @@ Integer max = Sql.currentConnection().selectFirstColumnOne(
 
 ### 外部ファイルに記述
 
-
+CmdX02.sql
 ```sql
 select 
     T2.COL1,
@@ -39,6 +39,7 @@ where T1.COL1 = T2.COL1 and T2.COL1=${param.col1}
 order by T2.COL1, T2.COL2
 ```
 
+CmdX02.java
 ```java
 public class CmdX02 extends SqlCmdBase {
 
