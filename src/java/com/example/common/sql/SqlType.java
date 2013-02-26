@@ -5,10 +5,19 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.example.common.sql.types.BigDecimalType;
+import com.example.common.sql.types.ByteArrayType;
+import com.example.common.sql.types.DoubleType;
+import com.example.common.sql.types.IntegerType;
+import com.example.common.sql.types.LongType;
+import com.example.common.sql.types.ShortType;
+import com.example.common.sql.types.SqlNameType;
+import com.example.common.sql.types.StringType;
+import com.example.common.sql.types.TimestampType;
 
 /**
  * SqlType
@@ -16,7 +25,7 @@ import java.util.Map;
  */
 public abstract class SqlType<T> {
 	
-	private static final String NULL = "null";
+	protected static final String NULL = "null";
 
 	private static final Map<Class<?>,SqlType<?>> map;
 
@@ -88,241 +97,6 @@ public abstract class SqlType<T> {
 		} else {
 			return get(value.getClass(), propName).
 				toConstant(value, hint);
-		}
-	}
-	
-	/**
-	 * 文字列型
-	 */
-	private static class StringType extends SqlType<String> {
-
-		/**
-		 * like 演算子のヒント
-		 */
-		private static final String HINT_LIKE = "like";
-		/**
-		 * like 演算子のヒント - 前方一致
-		 */
-		private static final String HINT_LIKE_START = "start";
-		/**
-		 * like 演算子のヒント - 後方一致
-		 */
-		private static final String HINT_LIKE_END = "end";
-		/**
-		 * like 演算子のヒント - 中間一致
-		 */
-		private static final String HINT_LIKE_MIDDLE = "middle";
-
-	    /**
-	     * 単一引用符
-	     */
-	    private final static char QUOT = '\'';
-
-	    /**
-	     * エスケープ文字。
-	     */
-	    private final static char ESCAPE_CHAR = '\'';
-	    // for postgres
-	    //private final static char ESCAPE_CHAR = '\\'; 
-		
-		public String toConstant(String value, Map<String,String> hint) {
-
-			if (value == null) {
-				return NULL;
-			}
-			char escapeChar = '\\';
-			String like = (hint != null)? hint.get(HINT_LIKE) : null;
-			if (like == null) {
-				// 通常のエスケープ
-				value = escape( (String)value);
-			} else if (HINT_LIKE_START.equals(like) ) {
-				value = String.format("%s%%", escapeLike( (String)value, escapeChar) );
-			} else if (HINT_LIKE_END.equals(like) ) {
-				value = String.format("%%%s", escapeLike( (String)value, escapeChar) );
-			} else if (HINT_LIKE_MIDDLE.equals(like) ) {
-				value = String.format("%%%s%%", escapeLike( (String)value, escapeChar) );
-			} else {
-				throw new IllegalArgumentException("bad hint for like:" + like);
-			}
-			return String.format("'%s'", value);
-		}
-		public String getValue(ResultSet rs, String columnName)
-		throws SQLException {
-			return SqlUtil.rtrim(rs.getString(columnName) );
-		}
-
-	    /**
-	     * 文字列中の単一引用符(')とエスケープ文字をエスケープする。(定数エンコード)
-	     */
-	    public static String escape(String s) {
-	        
-	        if (s == null) {
-	            return s;
-	        }
-
-	        StringBuilder buffer = new StringBuilder();
-
-	        for (int i = 0; i < s.length(); i++) {
-	            char c = s.charAt(i); 
-	            if (c == QUOT || c == ESCAPE_CHAR) {
-	                buffer.append(ESCAPE_CHAR);
-	            }
-	            buffer.append(c);
-	        }
-
-	        return buffer.toString();
-	    }
-
-	    /**
-	     * LIKE述部をエスケープする。
-	     * <br>SQL文では like ～ escape 'escapeChar' と指定します。
-	     */
-	    public static String escapeLike(String s, char escapeChar) {
-	        
-	        if (s == null) {
-	            return s;
-	        }
-
-	        StringBuilder buffer = new StringBuilder();
-
-	        for (int i = 0; i < s.length(); i++) {
-	            
-	            char c = s.charAt(i); 
-
-	            if (c == '_' || c == '%' || c == escapeChar) {
-	                buffer.append(escapeChar);
-	            } else if (c == '＿' || c == '％') {
-	                // DB2固有の仕様。
-	                // (MBCSの下線とパーセント)
-	                buffer.append(escapeChar);
-	            }
-	            
-	            buffer.append(c);
-	        }
-	        
-	        return escape(buffer.toString() );
-	    }	
-	}
-
-	/**
-	 * SQL名型
-	 * (スキーマ名、テーブル名等で使用)
-	 */
-	public static class SqlNameType extends SqlType<SqlName> {
-		public String toConstant(SqlName value, Map<String,String> hint) {
-			return value.toString();
-		}
-		public SqlName getValue(ResultSet rs, String columnName)
-		throws SQLException {
-			throw new RuntimeException("not implemented");
-		}
-	}
-
-	/**
-	 * 整数型
-	 */
-	private static class IntegerType extends SqlType<Integer> {
-		public String toConstant(Integer value, Map<String,String> hint) {
-			return (value == null)? NULL : 
-				value.toString();
-		}
-		public Integer getValue(ResultSet rs, String columnName)
-		throws SQLException {
-			return rs.getInt(columnName);
-		}
-	}
-
-	/**
-	 * BigDecimal型
-	 */
-	private static class BigDecimalType extends SqlType<BigDecimal> {
-		public String toConstant(BigDecimal value, Map<String,String> hint) {
-			return (value == null)? NULL : 
-				value.toString();
-		}
-		public BigDecimal getValue(ResultSet rs, String columnName)
-		throws SQLException {
-			return rs.getBigDecimal(columnName);
-		}
-	}
-
-	/**
-	 * Long型
-	 */
-	private static class LongType extends SqlType<Long> {
-		public String toConstant(Long value, Map<String,String> hint) {
-			return (value == null)? NULL : 
-				value.toString();
-		}
-		public Long getValue(ResultSet rs, String columnName)
-		throws SQLException {
-			return rs.getLong(columnName);
-		}
-	}
-
-	/**
-	 * Short型
-	 */
-	private static class ShortType extends SqlType<Short> {
-		public String toConstant(Short value, Map<String,String> hint) {
-			return (value == null)? NULL : 
-				value.toString();
-		}
-		public Short getValue(ResultSet rs, String columnName)
-		throws SQLException {
-			return rs.getShort(columnName);
-		}
-	}
-
-	/**
-	 * Double型
-	 */
-	private static class DoubleType extends SqlType<Double> {
-		public String toConstant(Double value, Map<String,String> hint) {
-			return (value == null)? NULL : 
-				value.toString();
-		}
-		public Double getValue(ResultSet rs, String columnName)
-		throws SQLException {
-			return rs.getDouble(columnName);
-		}
-	}
-
-	/**
-	 * Timestamp型
-	 */
-	private static class TimestampType extends SqlType<Timestamp> {
-		public String toConstant(Timestamp value, Map<String,String> hint) {
-			return (value == null)? NULL : 
-				String.format("'%s'",
-					new SimpleDateFormat("yyyy-MM-dd-HH.mm.ss.SSSSSS").
-						format(value) );
-		}
-		public Timestamp getValue(ResultSet rs, String columnName)
-		throws SQLException {
-			return rs.getTimestamp(columnName);
-		}
-	}
-
-	/**
-	 * Timestamp型
-	 */
-	private static class ByteArrayType extends SqlType<byte[]> {
-		public String toConstant(byte[] value, Map<String,String> hint) {
-			if (value == null) {
-				return NULL;
-			}
-			StringBuilder sb = new StringBuilder();
-			sb.append("x'");
-			for (byte b : value) {
-				sb.append(String.format("%02x", b) );
-			}
-			sb.append("'");
-			return sb.toString();
-		}
-		public byte[] getValue(ResultSet rs, String columnName)
-		throws SQLException {
-			return rs.getBytes(columnName);
 		}
 	}
 

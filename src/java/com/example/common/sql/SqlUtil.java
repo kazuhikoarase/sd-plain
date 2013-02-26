@@ -14,7 +14,7 @@ import java.util.Map.Entry;
  * SqlUtil
  * @author Kazuhiko Arase
  */
-class SqlUtil {
+public class SqlUtil {
 
 	private static final String SETTER_PREFIX = "set";
 	private static final String GETTER_PREFIX = "get";
