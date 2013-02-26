@@ -75,6 +75,12 @@ Sql.currentConnection().update(new SqlString("delete from TX0001 where 1<>1") );
 
 ### 外部ファイルに記述
 
+「--!」で開始するコメントは ECMAScript(JavaScript) と解釈されます。
+
+Java側のプロパティは変数 param のプロパティとしてアクセスします。
+
+パラメータの埋め込みは ${変数名} と記述します。
+
 CmdX02.sql
 ```sql
 select 
