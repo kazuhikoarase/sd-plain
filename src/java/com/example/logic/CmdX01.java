@@ -14,7 +14,8 @@ public class CmdX01 extends CmdBase {
 	
 	public void execute() throws Exception {
 		Integer max = Sql.currentConnection().selectFirstColumnOne(
-				new SqlString("select max(COL3) from TX0001") );
+			new SqlString("select max(COL3) from TX0001 where COL4=${0}").
+			format("Z") );
 		this.max = (max != null)? max.intValue() : 0;
 	}
 	
