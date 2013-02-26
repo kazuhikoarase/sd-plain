@@ -1,8 +1,65 @@
-sd-plain
-========
-最小限のDAOとWEBアプリのひな形
+最小限のDAOとWEBアプリのひな形です。
 
+## あらかじめ既存のテーブル毎に作成したクラスによる操作
 
+主にPKEYを指定した一行単位の処理に対応します。
+
+```sql
+create table TX0001 (
+    COL1 CHAR(8) not null,
+    COL2 DECIMAL(10,2),
+    COL3 INTEGER,
+    COL4 VARCHAR(20),
+    -- プライマリキー
+    primary key (COL1)
+);
+```
+
+```java
+// 1行登録
+Tx0001.Row row = Tx0001.newRow();
+row.setCol1("1");
+row.setCol2(BigDecimal.ZERO);
+row.setCol3(4);
+row.setCol4("a");
+Tx0001.insertRow(row);
+```
+
+```java
+// col1 = 1 の行を検索
+Tx0001.Row row = Tx0001.newRow();
+row.setCol1("1");
+
+boolean selected = Tx0001.selectRow(row);
+
+if (selected) {
+	// 既存の場合、 update
+	Tx0001.updateRow(row);
+} else {
+	// 未登録の場合、 insert
+	Tx0001.insertRow(row);
+}
+```
+
+```java
+// col1 = 1 の行を更新
+Tx0001.Row row = Tx0001.newRow();
+row.setCol1("1");
+row.setCol3(5);
+row.setCol4("b");
+Tx0001.updateRow(row);
+```
+
+```java
+// col1 = 1 の行を削除
+Tx0001.Row row = Tx0001.newRow();
+row.setCol1("1");
+Tx0001.deleteRow(row);
+```
+
+## 任意のSQL
+
+テーブルの結合や、複雑な検索条件などに対応します。
 
 ### Javaソースにインライン記述
 
@@ -12,8 +69,9 @@ Integer max = Sql.currentConnection().selectFirstColumnOne(
 	format("Z") );
 ```
 
-
-## 任意のSQL
+```
+Sql.currentConnection().update(new SqlString("delete from TX0001 where 1<>1") );
+```
 
 ### 外部ファイルに記述
 
