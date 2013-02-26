@@ -20,7 +20,7 @@ import com.example.common.logging.LogFactory;
  */
 public class DataSourceConfig {
 	
-	private static final String CONFIG_FILE = "sd-plain-datasource-config.xml";
+	private static final String CONFIG_FILE = "datasource-config.xml";
 	
 	private static final Log log = LogFactory.getLog(DataSourceConfig.class);
 
