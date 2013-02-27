@@ -63,7 +63,7 @@ Tx0001.deleteRow(row);
 
 ### Javaソースにインライン記述
 
-```sql
+```java
 Integer max = Sql.currentConnection().selectFirstColumnOne(
 	new SqlString("select max(COL3) from TX0001 where COL4=${0}").
 	format("Z") );
@@ -84,23 +84,19 @@ Java側のプロパティは変数 param のプロパティとしてアクセス
 CmdX02.sql
 ```sql
 select 
-    T2.COL1,
-    T2.COL2,
-    T2.COL3,
-    T2.COL4 
-
+    T2.COL1, T2.COL2, T2.COL3, T2.COL4 
 from
-    TX0001 T1,
-    TX0002 T2
-
-where T1.COL1 = T2.COL1 and T2.COL1=${param.col1}
+    TX0001 T1, TX0002 T2
+where
+    T1.COL1 = T2.COL1 and T2.COL1=${param.col1}
 
 --! // col2 が設定されている場合、条件追加
 --! if (param.col2 != null) {
      and T2.COL2=${param.col2}
 --! }
 
-order by T2.COL1, T2.COL2
+order by
+    T2.COL1, T2.COL2
 ```
 
 CmdX02.java
