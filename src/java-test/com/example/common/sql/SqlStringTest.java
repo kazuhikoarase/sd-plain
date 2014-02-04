@@ -1,7 +1,7 @@
 package com.example.common.sql;
 
-import junit.framework.Assert;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.example.common.TestCaseBase;
