@@ -86,6 +86,9 @@ public class SqlUtil {
 	public static Map<String, Method> getAllSetters(Class<?> c)  {
 		Map<String, Method> map = new HashMap<String, Method>();
 		for (Method method : c.getMethods() ) {
+		    if (method.getParameterTypes().length != 1) {
+		        continue;
+		    }
 			if (method.getName().startsWith(SETTER_PREFIX) ) {
 				map.put(method.getName().substring(
 						SETTER_PREFIX.length() ), method);

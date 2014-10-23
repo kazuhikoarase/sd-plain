@@ -314,6 +314,9 @@ public class SqlConnection {
 		
 		@Override
 		public T create() throws Exception {
+		    if (TableRow.class.isAssignableFrom(clazz) ) {
+		        return TableRowFactory.create(clazz);
+		    }
 			return clazz.newInstance();
 		}
 	}
